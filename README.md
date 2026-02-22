@@ -1,4 +1,4 @@
-# tryhttpd
+# message-board-c
 
 Tiny message board server in C using `libmicrohttpd` + SQLite.
 

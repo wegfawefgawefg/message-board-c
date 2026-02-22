@@ -1,4 +1,8 @@
 (function(){
+  const STORAGE_THEME='mbc_theme';
+  const STORAGE_ID='mbc_id';
+  const STORAGE_NICK='mbc_nick';
+
   const root=document.documentElement;
   const form=document.getElementById('postForm');
   const msg=document.getElementById('message');
@@ -17,30 +21,30 @@
     }
   }
 
-  const savedTheme=localStorage.getItem('tryhttpd_theme');
+  const savedTheme=localStorage.getItem(STORAGE_THEME);
   const preferredDark=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
   setTheme(savedTheme||(preferredDark?'dark':'light'));
 
   if(themeToggle){
     themeToggle.addEventListener('click',function(){
       const next=root.classList.contains('dark')?'light':'dark';
-      localStorage.setItem('tryhttpd_theme',next);
+      localStorage.setItem(STORAGE_THEME,next);
       setTheme(next);
     });
   }
 
-  let id=localStorage.getItem('tryhttpd_client_id');
+  let id=localStorage.getItem(STORAGE_ID);
   if(!id){
     id=(window.crypto&&crypto.randomUUID)
       ?crypto.randomUUID()
       :'client-'+Date.now()+'-'+Math.random().toString(16).slice(2);
-    localStorage.setItem('tryhttpd_client_id',id);
+    localStorage.setItem(STORAGE_ID,id);
   }
   cid.value=id;
 
-  const savedNick=localStorage.getItem('tryhttpd_nickname');
+  const savedNick=localStorage.getItem(STORAGE_NICK);
   if(savedNick){nick.value=savedNick;}
-  nick.addEventListener('change',()=>localStorage.setItem('tryhttpd_nickname',nick.value.trim()));
+  nick.addEventListener('change',()=>localStorage.setItem(STORAGE_NICK,nick.value.trim()));
 
   msg.addEventListener('keydown',function(e){
     if(e.key==='Enter'&&!e.shiftKey){
