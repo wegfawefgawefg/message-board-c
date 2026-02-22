@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Message Board</title>
+  <script>
+    window.tailwind = window.tailwind || {};
+    window.tailwind.config = { darkMode: 'class' };
+    globalThis.tailwind = window.tailwind;
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root[data-theme="light"] {
+      color-scheme: light;
+    }
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+    }
+    :root[data-theme="light"] body {
+      background-image: linear-gradient(to bottom, #d1fae5, #f1f5f9) !important;
+      color: #0f172a !important;
+    }
+    :root[data-theme="dark"] body {
+      background-image: linear-gradient(to bottom, #020617, #0f172a) !important;
+      color: #e2e8f0 !important;
+    }
+    :root[data-theme="light"] .theme-surface {
+      background: #ffffff !important;
+      border-color: #d1fae5 !important;
+      color: #0f172a !important;
+    }
+    :root[data-theme="dark"] .theme-surface {
+      background: #0f172a !important;
+      border-color: #1e293b !important;
+      color: #e2e8f0 !important;
+    }
+    :root[data-theme="light"] #chatScroll {
+      background: #f8fafc !important;
+    }
+    :root[data-theme="dark"] #chatScroll {
+      background: #020617 !important;
+    }
+    :root[data-theme="light"] .theme-input {
+      background: #ffffff !important;
+      border-color: #cbd5e1 !important;
+      color: #0f172a !important;
+    }
+    :root[data-theme="dark"] .theme-input {
+      background: #020617 !important;
+      border-color: #334155 !important;
+      color: #e2e8f0 !important;
+    }
+    :root[data-theme="light"] .theme-label {
+      color: #334155 !important;
+    }
+    :root[data-theme="dark"] .theme-label {
+      color: #cbd5e1 !important;
+    }
+    :root[data-theme="light"] .theme-subtle {
+      color: #64748b !important;
+    }
+    :root[data-theme="dark"] .theme-subtle {
+      color: #94a3b8 !important;
+    }
+    :root[data-theme="light"] #themeToggle {
+      background: #ffffff !important;
+      border-color: #cbd5e1 !important;
+      color: #334155 !important;
+    }
+    :root[data-theme="dark"] #themeToggle {
+      background: #1e293b !important;
+      border-color: #334155 !important;
+      color: #e2e8f0 !important;
+    }
+    :root[data-theme="light"] .msg-item {
+      background: #ffffff !important;
+      border-color: #e2e8f0 !important;
+    }
+    :root[data-theme="dark"] .msg-item {
+      background: #0f172a !important;
+      border-color: #334155 !important;
+    }
+    :root[data-theme="light"] .msg-tag {
+      background: #f1f5f9 !important;
+      color: #334155 !important;
+    }
+    :root[data-theme="dark"] .msg-tag {
+      background: #1e293b !important;
+      color: #e2e8f0 !important;
+    }
+    :root[data-theme="light"] .msg-time {
+      color: #64748b !important;
+    }
+    :root[data-theme="dark"] .msg-time {
+      color: #94a3b8 !important;
+    }
+    :root[data-theme="light"] .msg-content {
+      color: #1e293b !important;
+    }
+    :root[data-theme="dark"] .msg-content {
+      color: #e2e8f0 !important;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-emerald-100 to-slate-100 text-slate-900 transition-colors dark:from-slate-950 dark:to-slate-900 dark:text-slate-100">
+  <main class="mx-auto max-w-4xl px-4 py-8">
+    <div class="mb-4 flex items-center justify-between gap-3">
+      <h1 class="text-3xl font-bold tracking-tight">Message Board</h1>
+      <button id="themeToggle" type="button"
+              class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700">
+        Night Mode
+      </button>
+    </div>
+    <section class="theme-surface mb-4 rounded-xl border border-emerald-100 bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <div class="h-[60vh] max-h-[520px] overflow-y-auto rounded-lg bg-slate-50 p-2 dark:bg-slate-950/60" id="chatScroll">
+        <ul id="messages">{{MESSAGES}}</ul>
+      </div>
+    </section>
+
+    <section class="theme-surface rounded-xl border border-emerald-100 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <form id="postForm" action="/post" method="post" class="grid gap-3">
+        <input type="hidden" name="client_id" id="client_id">
+        <input type="hidden" name="ajax" value="1">
+
+        <label for="nickname" class="theme-label text-sm font-semibold text-slate-700 dark:text-slate-300">Nickname</label>
+        <input id="nickname" name="nickname" maxlength="63" placeholder="Pick a nickname" required
+               class="theme-input w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-emerald-300 focus:ring dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:ring-emerald-600">
+
+        <label for="message" class="theme-label text-sm font-semibold text-slate-700 dark:text-slate-300">Message</label>
+        <textarea id="message" name="message" maxlength="1023" placeholder="Type your message" required
+                  class="theme-input min-h-[96px] w-full resize-y rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none ring-emerald-300 focus:ring dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:ring-emerald-600"></textarea>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <button type="submit" class="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700">Post</button>
+          <small class="theme-subtle text-xs text-slate-500 dark:text-slate-400">Press Enter to post. Shift+Enter for newline.</small>
+        </div>
+        <div id="status" aria-live="polite" class="theme-subtle min-h-[1.2em] text-sm text-slate-600 dark:text-slate-300"></div>
+      </form>
+    </section>
+  </main>
+
+  <script src="/assets/app.js"></script>
+</body>
+</html>
